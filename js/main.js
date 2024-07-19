@@ -1,15 +1,12 @@
-const SYMBOLS = [
-  '01',
-  '02',
-  '03',
-  '04',
-  '05',
-  '06',
-  '07',
-  '08',
-  '09',
-  '10'
-];
+const minSymbol = 1;
+const maxSymbol = 10;
+const minPrice = 10000;
+const maxPrice = 50000;
+const similiarAnnounceCount = 10;
+const minLatitude = 35.65000;
+const maxLatitude = 35.70000;
+const minLongitude = 139.70000;
+const maxLongitude = 139.80000;
 
 const TITLES = [
   'Апартаменты просторные для большой семьи',
@@ -73,46 +70,52 @@ const getRandomInteger = (a, b) => {
   return Math.floor(result);
 };
 
-const getRandomFloatNumber = (min, max) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Number(Math.random() * (max - min) + min).toFixed(5);
+const getRandomFloatNumber = (a, b) => {
+  const lower = Math.ceil(Math.min(a, b));
+  const upper = Math.floor(Math.max(a, b));
+  const result = Math.random() * (upper - lower) + lower;
+  return Number(result).toFixed(5);
 };
-
-const latitude = getRandomFloatNumber(35.65000, 35.70000);
-const longitude = getRandomFloatNumber(139.70000, 139.80000);
-
 const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
 
-const getRandomArray = (integer, array) => {
-  const someArray = [];
-  for (let i = 0; i <= integer; i++) {
-    someArray.push(array[i]);
+const getRandomShuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
-  return someArray;
+  return array.slice(getRandomInteger(0, array.length - 1));
 };
 
+const createCounter = () => {
+  let count = 1;
+  return function() {
+    return `${count++}`;
+  };
+};
+
+const getCounter = createCounter();
+
 const createAuthor = () => ({
-  avatar: `img/avatars/user${getRandomArrayElement(SYMBOLS)}.png`
+  avatar: `img/avatars/user${getCounter().padStart(2,0)}.png`
 });
 
 const createOffer = () => ({
   title: getRandomArrayElement(TITLES),
-  adress: `${latitude},${longitude}`,
-  price: getRandomInteger(100, 5000),
+  adress: `${getRandomFloatNumber(minLatitude, maxLatitude)},${getRandomFloatNumber(minLongitude, maxLongitude)}`,
+  price: getRandomInteger(minPrice, maxPrice),
   type: getRandomArrayElement(TYPES),
-  rooms: getRandomInteger(1, 10),
-  guests: getRandomInteger(1, 10),
+  rooms: getRandomInteger(minSymbol, maxSymbol),
+  guests: getRandomInteger(minSymbol, maxSymbol),
   checkin: getRandomArrayElement(CHECK_TIME),
   checkout: getRandomArrayElement(CHECK_TIME),
-  features: getRandomArray(getRandomInteger(0,FEATURES.length - 1), FEATURES),
+  features: getRandomShuffleArray(FEATURES),
   description: getRandomArrayElement(DESCRIPTIONS),
-  photos: getRandomArray(getRandomInteger(0,PHOTOS.length - 1), PHOTOS),
+  photos: getRandomShuffleArray(PHOTOS),
 });
 
 const createLocation = () => ({
-  lat: latitude,
-  lng: longitude
+  lat: getRandomFloatNumber(minLatitude, maxLatitude),
+  lng: getRandomFloatNumber(minLongitude, maxLongitude)
 });
 
 const createAddress = () => ({
@@ -121,5 +124,7 @@ const createAddress = () => ({
   location: createLocation()
 });
 
-createAddress();
-
+const similiarAnnounce = () => {
+  const similiarAnnounceArray = Array.from({length: similiarAnnounceCount}, createAddress);
+  return similiarAnnounceArray;
+};
