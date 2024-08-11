@@ -31,8 +31,6 @@ const createTemplate = (offer, author, photos) => {
     const isNecessary = offer.features.some((feature) => popupFeatureListItem.classList.contains(`popup__feature--${feature}`));
 
     if (isNecessary) {
-      popupFeatureListItem.textContent = offer.features;
-    } else {
       popupFeatureListItem.remove();
     }
   });
