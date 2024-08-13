@@ -1,61 +1,56 @@
-import {createOffer} from './create-offer.js';
-import {createAuthor} from './create-author.js';
+import {createAddress} from './data.js';
+import {getRooms, getGuests} from './util.js';
+import {ROOMS, GUESTS} from './constants.js';
 
-const OFFER = createOffer();
-const AUTHOR = createAuthor();
-const OFFER_PHOTOS = OFFER.photos;
+const mockAdress = createAddress();
 
 const cardTemplate = document.querySelector('#card').content;
 
-const createTemplate = (offer, author, photos) => {
+const createTemplate = (object) => {
   const element = cardTemplate.cloneNode(true);
 
-  const popupTitle = element.querySelector('.popup__title');
-  popupTitle.textContent = offer.title;
+  const {title, adress, price, rooms, guests, checkin, checkout, features} = object.offer;
+  const {avatar} = object.author;
 
-  const popupAdress = element.querySelector('.popup__text--address');
-  popupAdress.textContent = offer.adress;
+  element.querySelector('.popup__title').textContent = title;
 
-  const popupPrice = element.querySelector('.popup__text--price');
-  popupPrice.textContent = `${offer.price} ₽/ночь`;
+  element.querySelector('.popup__text--address').textContent = adress;
 
-  const popupCapacity = element.querySelector('.popup__text--capacity');
-  popupCapacity.textContent = `${offer.rooms} комнаты для ${offer.guests} гостей`;
+  element.querySelector('.popup__text--price').textContent = `${price} ₽/ночь`;
 
-  const popupTime = element.querySelector('.popup__text--time');
-  popupTime.textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`;
+  element.querySelector('.popup__text--capacity').textContent = `${rooms} ${getRooms(ROOMS, rooms)} для ${guests} ${getGuests(GUESTS, guests)}`;
 
-  const popupFeatures = element.querySelector('.popup__features');
-  const popupFeatureList = popupFeatures.querySelectorAll('.popup__feature');
-  popupFeatureList.forEach((popupFeatureListItem)=> {
-    const isNecessary = offer.features.some((feature) => popupFeatureListItem.classList.contains(`popup__feature--${feature}`));
+  element.querySelector('.popup__text--time').textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
 
-    if (isNecessary) {
-      popupFeatureListItem.remove();
+  const featuresListFragment = document.createDocumentFragment();
+  features.forEach((featureItem) => {
+    const featuresListItem = element.querySelector(`.popup__feature--${featureItem}`);
+    if(featuresListItem) {
+      featuresListFragment.append(featuresListItem);
     }
   });
+  element.querySelector('.popup__features').innerHTML = '';
+  element.querySelector('.popup__features').append(featuresListFragment);
 
   const popupPhotos = element.querySelector('.popup__photos');
   const popupPhoto = popupPhotos.querySelector('img');
 
-  for (let i = 0; i < photos.length; i++) {
+  for (let i = 0; i < object.offer.photos.length; i++) {
     if(i > 0) {
       const newElement = popupPhoto.cloneNode(true);
       popupPhotos.appendChild(newElement);
     }
     const popupPhotoList = popupPhotos.querySelectorAll('img');
-    popupPhotoList[i].src = photos[i];
+    popupPhotoList[i].src = object.offer.photos[i];
   }
 
-  const popupDescription = element.querySelector('.popup__description');
-  popupDescription.textContent = offer.description;
+  element.querySelector('.popup__description').textContent = object.offer.description;
 
-  const popupAvatar = element.querySelector('.popup__avatar');
-  popupAvatar.src = author.avatar;
+  element.querySelector('.popup__avatar').src = avatar;
 
   return element;
 };
 
-const template = createTemplate(OFFER, AUTHOR, OFFER_PHOTOS);
+const template = createTemplate(mockAdress);
 
 export {template};
