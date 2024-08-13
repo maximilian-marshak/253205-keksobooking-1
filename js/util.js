@@ -28,4 +28,20 @@ const createCounter = () => {
   };
 };
 
-export {getRandomInteger, getRandomFloatNumber, getRandomArrayElement, getRandomShuffleArray, createCounter};
+const getGuests = (array, number) => {
+  if (number === 1) {
+    return `${array[0]}`;
+  }
+  return `${array[1]}`;
+};
+
+const getRooms = (array, number) => {
+  if (number === 1) {
+    return `${array[0]}`;
+  } else if (1 < number && number <= 4) {
+    return `${array[1]}`;
+  }
+  return `${array[2]}`;
+};
+
+export {getRandomInteger, getRandomFloatNumber, getRandomArrayElement, getRandomShuffleArray, createCounter, getGuests, getRooms};

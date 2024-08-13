@@ -15,4 +15,4 @@ const similiarAnnounce = () => {
   return similiarAnnounceArray;
 };
 
-export {similiarAnnounce};
+export {similiarAnnounce, createAddress};
