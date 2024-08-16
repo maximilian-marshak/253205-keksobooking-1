@@ -28,20 +28,36 @@ const createCounter = () => {
   };
 };
 
-const getGuests = (array, number) => {
+const getGuests = (guests, number) => {
   if (number === 1) {
-    return `${array[0]}`;
+    return `${guests[0]}`;
   }
-  return `${array[1]}`;
+  return `${guests[1]}`;
 };
 
-const getRooms = (array, number) => {
+const getRooms = (rooms, number) => {
   if (number === 1) {
-    return `${array[0]}`;
+    return `${rooms[0]}`;
   } else if (1 < number && number <= 4) {
-    return `${array[1]}`;
+    return `${rooms[1]}`;
   }
-  return `${array[2]}`;
+  return `${rooms[2]}`;
 };
 
-export {getRandomInteger, getRandomFloatNumber, getRandomArrayElement, getRandomShuffleArray, createCounter, getGuests, getRooms};
+const disableFormElements = (elementParentClass, elementTag) => {
+  const parentFormElement = document.querySelector(elementParentClass);
+  const formElements = parentFormElement.querySelectorAll(elementTag);
+  formElements.forEach((element) => {
+    element.setAttribute('disabled','');
+  });
+};
+
+const activateFormElements = (elementParentClass, elementTag) => {
+  const parentFormElement = document.querySelector(elementParentClass);
+  const formElements = parentFormElement.querySelectorAll(elementTag);
+  formElements.forEach((element) => {
+    element.removeAttribute('disabled');
+  });
+};
+
+export {getRandomInteger, getRandomFloatNumber, getRandomArrayElement, getRandomShuffleArray, createCounter, getGuests, getRooms, disableFormElements, activateFormElements};

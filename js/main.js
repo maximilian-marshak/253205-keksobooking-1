@@ -1,7 +1,6 @@
 import {similiarAnnounce} from './data.js';
-import {template} from './create-element.js';
-
-const newElement = document.querySelector('#map-canvas');
-newElement.appendChild(template);
+import {getInactiveState} from './form.js';
 
 similiarAnnounce();
+getInactiveState();
+
