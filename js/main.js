@@ -1,6 +1,6 @@
 import {similiarAnnounce} from './data.js';
-import {getInactiveState} from './form.js';
+import './form.js';
 
 similiarAnnounce();
-//getInactiveState();
+
 
