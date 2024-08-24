@@ -1,5 +1,12 @@
 import {toggleFormStatus} from './util.js';
 
+const MAX_PRICE_VALUE = 100000;
+const MIN_TITLE_VALUE = 30;
+const MAX_TITLE_VALUE = 100;
+const TITLE_ERROR_MESSAGE = 'От 30 до 100 символов';
+const PRICE_ERROR_MESSAGE = 'Максимальное значение 100000';
+const ROOMS_ERROR_MESSAGE = 'Неверное количество комнат и гостей';
+
 const addForm = document.querySelector('.ad-form');
 const mapFilters = document.querySelector('.map__filters');
 
@@ -18,13 +25,13 @@ const pristine = new Pristine(addForm, {
   classTo: 'ad-form__element',
   errorClass: 'ad-form__element--invalid',
   errorTextParent: 'ad-form__element',
-  errorTextTag: 'fieldset',
+  errorTextTag: 'span',
 }, true);
 
 const price = addForm.querySelector('#price');
 
-const validateAdTitle = (value) => value.length >= 30 && value.length <= 100;
-const validateAdPrice = (value) => value < 100000;
+const validateAdTitle = (value) => value.length >= MIN_TITLE_VALUE && value.length <= MAX_TITLE_VALUE;
+const validateAdPrice = (value) => value < MAX_PRICE_VALUE;
 
 const roomNumber = document.querySelector('#room_number');
 const capacityGuest = document.querySelector('#capacity');
@@ -35,13 +42,17 @@ const roomOption = {
   100 : [0]
 };
 
-roomNumber.addEventListener('change', () => {
+const onSelectCapacityChange = () => {
   pristine.validate(capacityGuest);
-});
+};
 
-capacityGuest.addEventListener('change', () => {
+const onSelectRoomChange = () => {
   pristine.validate(roomNumber);
-});
+};
+
+roomNumber.addEventListener('change', onSelectCapacityChange);
+
+capacityGuest.addEventListener('change', onSelectRoomChange);
 
 const validateGuest = () => roomOption[roomNumber.value].includes(Number(capacityGuest.value));
 
@@ -56,7 +67,7 @@ const typeOption = {
   'palace' : 10000
 };
 
-const getMinPrice = () => {
+const onInputChange = () => {
   const typeOptionKeys = Object.keys(typeOption);
   for (let i = 0; i < typeOptionKeys.length; i++) {
     if (typeHousing.value === typeOptionKeys[i]) {
@@ -66,46 +77,31 @@ const getMinPrice = () => {
   }
 };
 
-typeHousing.addEventListener('change', getMinPrice);
-
-const timeOption = {
-  '12:00' : '12:00',
-  '13:00' : '13:00',
-  '14:00' : '14:00'
-};
+typeHousing.addEventListener('change', onInputChange);
 
 const timeIn = addForm.querySelector('#timein');
 const timeOut = addForm.querySelector('#timeout');
 
-const validateTimeIn = () => {
-  const timeInKeys = Object.keys(timeOption);
-  for (let i = 0; i < timeInKeys.length; i++){
-    if (timeInKeys[i] === timeIn.value) {
-      timeOut.value = timeIn.value;
-    }
-  }
+const onInputTimeInChange = (evt) => {
+  timeOut.value = evt.target.value;
 };
 
-const validateTimeOut = () => {
-  const timeOutValues = Object.values(timeOption);
-  for (let i = 0; i < timeOutValues.length; i++){
-    if (timeOutValues[i] === timeOut.value) {
-      timeIn.value = timeOut.value;
-    }
-  }
+const onInputTimeOutChange = (evt) => {
+  timeIn.value = evt.target.value;
 };
 
-timeIn.addEventListener('change', validateTimeIn);
-timeOut.addEventListener('change', validateTimeOut);
+timeIn.addEventListener('change', onInputTimeInChange);
+timeOut.addEventListener('change', onInputTimeOutChange);
 
-pristine.addValidator(addForm.querySelector('#title'), validateAdTitle, 'От 30 до 100 символов');
-pristine.addValidator(price, validateAdPrice, 'Максимальное значение 100000');
-pristine.addValidator(roomNumber, validateAdRooms, 'Неверное количестов комнта и гостей');
-pristine.addValidator(capacityGuest, validateGuest, 'Неверное количестов комнта и гостей');
+pristine.addValidator(addForm.querySelector('#title'), validateAdTitle, TITLE_ERROR_MESSAGE);
+pristine.addValidator(price, validateAdPrice, PRICE_ERROR_MESSAGE);
+pristine.addValidator(roomNumber, validateAdRooms, ROOMS_ERROR_MESSAGE);
+pristine.addValidator(capacityGuest, validateGuest, ROOMS_ERROR_MESSAGE);
 
-addForm.addEventListener('submit', (evt) => {
-  evt.preventDefault();
+const onSubmitSend = () => {
   pristine.validate();
-});
+};
+
+addForm.addEventListener('submit', onSubmitSend);
 
 export {getInactiveState};
