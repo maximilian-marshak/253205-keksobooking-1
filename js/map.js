@@ -1,36 +1,40 @@
 import {onMapLoad} from './form.js';
-import {template} from './create-element.js';
+import {createTemplate} from './create-element.js';
+import {similiarAnnounce} from './data.js';
 
-const mainIconSize = [52, 52];
-const mainIconAnchor = [26, 52];
-const iconSize = [40, 40];
-const iconAnchor = [20, 40];
-const mapCenter = {
+const MAIN_ICON_SIZE = [52, 52];
+const MAIN_ICON_ANCHOR = [26, 52];
+const MAIN_ICON_URL = '/img/main-pin.svg';
+const ICON_SIZE = [40, 40];
+const ICON_ANCHOR = [20, 40];
+const ICON_URL = '/img/pin.svg';
+const MAP_CENTER = {
   lat: 35.65283,
   lng: 139.83947
 };
-const {lat, lng} = mapCenter;
+const MAP_LAYER = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
+const announces = similiarAnnounce();
 const adressInput = document.querySelector('#address');
 
-const map = L.map('map-canvas').on('load', onMapLoad).setView(mapCenter , 10);
+const map = L.map('map-canvas').on('load', onMapLoad).setView(MAP_CENTER , 10);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+L.tileLayer(MAP_LAYER).addTo(map);
 
 const mainPinIcon = L.icon({
-  iconUrl: '/img/main-pin.svg',
-  iconSize: mainIconSize,
-  iconAnchor: mainIconAnchor
+  iconUrl: MAIN_ICON_URL,
+  iconSize: MAIN_ICON_SIZE,
+  iconAnchor: MAIN_ICON_ANCHOR
 });
 
-const markerMain = L.marker(mapCenter,
+const markerMain = L.marker(MAP_CENTER,
   {
     draggable: true,
     icon: mainPinIcon
   });
 markerMain.addTo(map);
 
-adressInput.value = `${lat},  ${lng}`;
+adressInput.value = `${MAP_CENTER.lat},  ${MAP_CENTER.lng}`;
 
 const onIconMove = (evt) => {
   const iconPosition = evt.target.getLatLng();
@@ -40,17 +44,21 @@ const onIconMove = (evt) => {
 markerMain.on('moveend',onIconMove);
 
 const pinIcon = L.icon({
-  iconUrl: '/img/pin.svg',
-  iconSize: iconSize,
-  iconAnchor: iconAnchor
+  iconUrl: ICON_URL,
+  iconSize: ICON_SIZE,
+  iconAnchor: ICON_ANCHOR
 });
 
-const marker = L.marker({
-  lat: 35.82569,
-  lng: 139.82132
-},
-{
-  icon: pinIcon
-});
-marker.addTo(map).bindPopup(template);
+const addMarkers = (element) => {
+  const {location: {lat, lng}} = element;
+  const marker = L.marker({
+    lat,
+    lng
+  },
+  {
+    pinIcon
+  });
+  marker.addTo(map).bindPopup(createTemplate(element));
+};
 
+announces.forEach(addMarkers);

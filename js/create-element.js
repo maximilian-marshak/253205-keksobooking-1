@@ -53,4 +53,4 @@ const createTemplate = (object) => {
 
 const template = createTemplate(mockAdress);
 
-export {template};
+export {template, createTemplate};
