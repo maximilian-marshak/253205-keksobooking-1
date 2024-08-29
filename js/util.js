@@ -1,32 +1,4 @@
-const getRandomInteger = (a, b) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-  const result = Math.random() * (upper - lower + 1) + lower;
-  return Math.floor(result);
-};
-
-const getRandomFloatNumber = (a, b) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-  const result = Math.random() * (upper - lower) + lower;
-  return Number(result).toFixed(5);
-};
-const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
-
-const getRandomShuffleArray = (array) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array.slice(getRandomInteger(0, array.length - 1));
-};
-
-const createCounter = () => {
-  let count = 1;
-  return function() {
-    return `${count++}`;
-  };
-};
+const ALERT_SHOW_TIME = 5000;
 
 const getGuests = (guests, number) => number === 1 ? guests[0] : guests[1];
 
@@ -44,4 +16,25 @@ const toggleFormStatus = (elementParentClass, elementTag, status) => {
   formElements.forEach((element) => status ? element.setAttribute('disabled','') : element.removeAttribute('disabled'));
 };
 
-export {getRandomInteger, getRandomFloatNumber, getRandomArrayElement, getRandomShuffleArray, createCounter, getGuests, getRooms, toggleFormStatus};
+const showAlert = (message) => {
+  const alertContainer = document.createElement('div');
+  alertContainer.style.zIndex = '100';
+  alertContainer.style.position = 'absolute';
+  alertContainer.style.left = '0';
+  alertContainer.style.top = '0';
+  alertContainer.style.right = '0';
+  alertContainer.style.padding = '10px 3px';
+  alertContainer.style.fontSize = '30px';
+  alertContainer.style.textAlign = 'center';
+  alertContainer.style.backgroundColor = '#ffaa99';
+
+  alertContainer.textContent = message;
+
+  document.body.append(alertContainer);
+
+  setTimeout(() => {
+    alertContainer.remove();
+  }, ALERT_SHOW_TIME);
+};
+
+export {getGuests, getRooms, toggleFormStatus, showAlert};

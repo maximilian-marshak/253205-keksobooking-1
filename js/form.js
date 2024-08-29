@@ -1,31 +1,24 @@
 import {toggleFormStatus} from './util.js';
+import {sendData} from './api.js';
+import {showSuccessModal, showErrorModal} from './modals.js';
 
 const MAX_PRICE_VALUE = 100000;
 const MIN_TITLE_VALUE = 30;
 const MAX_TITLE_VALUE = 100;
 const TITLE_ERROR_MESSAGE = 'От 30 до 100 символов';
-const PRICE_ERROR_MESSAGE = 'Максимальное значение 100000';
+const PRICE_ERROR_MESSAGE = 'Неверная цена';
 const ROOMS_ERROR_MESSAGE = 'Неверное количество комнат и гостей';
 
 const addForm = document.querySelector('.ad-form');
 const mapFilters = document.querySelector('.map__filters');
-
-const onMapNotLoad = () => {
-  addForm.classList.add('ad-form--disabled');
-  toggleFormStatus(mapFilters, 'select', 'disabled');
-  toggleFormStatus(mapFilters, 'fieldset', 'disabled');
-  toggleFormStatus(addForm, 'fieldset', 'disabled');
-};
+const sliderElement = document.querySelector('.ad-form__slider');
+const resetButton = document.querySelector('.ad-form__reset');
 
 const onMapLoad = () => {
   addForm.classList.remove('ad-form--disabled');
   toggleFormStatus(mapFilters, 'select');
   toggleFormStatus(mapFilters, 'fieldset');
   toggleFormStatus(addForm, 'fieldset');
-};
-
-const getInactiveState = () =>{
-  window.addEventListener('load', onMapNotLoad);
 };
 
 const pristine = new Pristine(addForm, {
@@ -38,7 +31,6 @@ const pristine = new Pristine(addForm, {
 const price = addForm.querySelector('#price');
 
 const validateAdTitle = (value) => value.length >= MIN_TITLE_VALUE && value.length <= MAX_TITLE_VALUE;
-const validateAdPrice = (value) => value < MAX_PRICE_VALUE;
 
 const roomNumber = document.querySelector('#room_number');
 const capacityGuest = document.querySelector('#capacity');
@@ -80,6 +72,13 @@ const onInputChange = () => {
     if (typeHousing.value === typeOptionKeys[i]) {
       price.min = typeOption[typeOptionKeys[i]];
       price.placeholder = typeOption[typeOptionKeys[i]];
+      sliderElement.noUiSlider.updateOptions({
+        range: {
+          min: typeOption[typeOptionKeys[i]],
+          max: MAX_PRICE_VALUE,
+        },
+        step: 1,
+      });
     }
   }
 };
@@ -100,15 +99,29 @@ const onInputTimeOutChange = (evt) => {
 timeIn.addEventListener('change', onInputTimeInChange);
 timeOut.addEventListener('change', onInputTimeOutChange);
 
+const validateAdPrice = (value) => {
+  const minPrice = typeOption[typeHousing.value];
+  return minPrice < value && value < MAX_PRICE_VALUE;
+};
+
 pristine.addValidator(addForm.querySelector('#title'), validateAdTitle, TITLE_ERROR_MESSAGE);
 pristine.addValidator(price, validateAdPrice, PRICE_ERROR_MESSAGE);
 pristine.addValidator(roomNumber, validateAdRooms, ROOMS_ERROR_MESSAGE);
 pristine.addValidator(capacityGuest, validateGuest, ROOMS_ERROR_MESSAGE);
 
-const onSubmitSend = () => {
-  pristine.validate();
+const onSubmitSend = (evt) => {
+  evt.preventDefault();
+  const isValid = pristine.validate();
+  if (isValid) {
+    const formData = new FormData(evt.target);
+    sendData(showSuccessModal(), showErrorModal(), formData);
+  }
 };
 
 addForm.addEventListener('submit', onSubmitSend);
 
-export {getInactiveState, onMapLoad, MAX_PRICE_VALUE, price, typeHousing, typeOption};
+resetButton.addEventListener('click', () => {
+  addForm.reset();
+});
+
+export {onMapLoad, MAX_PRICE_VALUE, price, sliderElement};
