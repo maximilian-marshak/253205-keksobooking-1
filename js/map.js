@@ -1,6 +1,6 @@
 import {onMapLoad} from './form.js';
 import {createTemplate} from './create-element.js';
-import {similiarAnnounce} from './data.js';
+import {getData} from './api.js';
 
 const MAIN_ICON_SIZE = [52, 52];
 const MAIN_ICON_ANCHOR = [26, 52];
@@ -14,7 +14,6 @@ const MAP_CENTER = {
 };
 const MAP_LAYER = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-const announces = similiarAnnounce();
 const adressInput = document.querySelector('#address');
 
 const map = L.map('map-canvas').on('load', onMapLoad).setView(MAP_CENTER , 10);
@@ -61,4 +60,6 @@ const addMarkers = (element) => {
   marker.addTo(map).bindPopup(createTemplate(element));
 };
 
-announces.forEach(addMarkers);
+getData().then((data) => {
+  data.forEach(addMarkers);
+});

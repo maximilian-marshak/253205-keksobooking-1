@@ -1,8 +1,5 @@
-import {similiarAnnounce} from './data.js';
+import './price-slider.js';
 import './form.js';
 import './map.js';
-import './price-slider.js';
-
-similiarAnnounce();
-
+import './api.js';
 

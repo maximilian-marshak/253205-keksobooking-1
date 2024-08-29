@@ -1,8 +1,5 @@
-import {createAddress} from './data.js';
 import {getRooms, getGuests} from './util.js';
 import {ROOMS, GUESTS} from './constants.js';
-
-const mockAdress = createAddress();
 
 const cardTemplate = document.querySelector('#card').content;
 
@@ -22,26 +19,31 @@ const createTemplate = (object) => {
 
   element.querySelector('.popup__text--time').textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
 
-  const featuresListFragment = document.createDocumentFragment();
-  features.forEach((featureItem) => {
-    const featuresListItem = element.querySelector(`.popup__feature--${featureItem}`);
-    if(featuresListItem) {
-      featuresListFragment.append(featuresListItem);
-    }
-  });
-  element.querySelector('.popup__features').innerHTML = '';
-  element.querySelector('.popup__features').append(featuresListFragment);
 
-  const popupPhotos = element.querySelector('.popup__photos');
-  const popupPhoto = popupPhotos.querySelector('img');
+  if (features) {
+    const featuresListFragment = document.createDocumentFragment();
+    features.forEach((featureItem) => {
+      const featuresListItem = element.querySelector(`.popup__feature--${featureItem}`);
+      if(featuresListItem) {
+        featuresListFragment.append(featuresListItem);
+      }
+    });
+    element.querySelector('.popup__features').innerHTML = '';
+    element.querySelector('.popup__features').append(featuresListFragment);
+  }
 
-  for (let i = 0; i < object.offer.photos.length; i++) {
-    if(i > 0) {
-      const newElement = popupPhoto.cloneNode(true);
-      popupPhotos.appendChild(newElement);
+  if (object.offer.photos) {
+    const popupPhotos = element.querySelector('.popup__photos');
+    const popupPhoto = popupPhotos.querySelector('img');
+
+    for (let i = 0; i < object.offer.photos.length; i++) {
+      if(i > 0) {
+        const newElement = popupPhoto.cloneNode(true);
+        popupPhotos.appendChild(newElement);
+      }
+      const popupPhotoList = popupPhotos.querySelectorAll('img');
+      popupPhotoList[i].src = object.offer.photos[i];
     }
-    const popupPhotoList = popupPhotos.querySelectorAll('img');
-    popupPhotoList[i].src = object.offer.photos[i];
   }
 
   element.querySelector('.popup__description').textContent = object.offer.description;
@@ -50,7 +52,4 @@ const createTemplate = (object) => {
 
   return element;
 };
-
-const template = createTemplate(mockAdress);
-
-export {template, createTemplate};
+export {createTemplate};

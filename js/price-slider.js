@@ -26,3 +26,5 @@ const onSliderUpdate = () => {
 };
 
 sliderElement.noUiSlider.on('update', onSliderUpdate);
+
+export {onSliderUpdate};
