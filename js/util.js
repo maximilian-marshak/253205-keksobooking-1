@@ -1,4 +1,4 @@
-const ALERT_SHOW_TIME = 5000;
+import {SHOW_TIME} from './constants.js';
 
 const getGuests = (guests, number) => number === 1 ? guests[0] : guests[1];
 
@@ -34,7 +34,18 @@ const showAlert = (message) => {
 
   setTimeout(() => {
     alertContainer.remove();
-  }, ALERT_SHOW_TIME);
+  }, SHOW_TIME);
 };
 
-export {getGuests, getRooms, toggleFormStatus, showAlert};
+const setDefaultSlider = (element, minPrice, maxPrice) => {
+  element.noUiSlider.updateOptions({
+    range: {
+      min: minPrice,
+      max: maxPrice,
+    },
+    start: minPrice,
+    step: 1,
+  });
+};
+
+export {getGuests, getRooms, toggleFormStatus, showAlert, setDefaultSlider};
