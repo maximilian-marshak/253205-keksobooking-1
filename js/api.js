@@ -8,7 +8,12 @@ const Route = {
 
 
 const getData = () => fetch(`${BASE_URL}${Route.GET_DATA}`)
-  .then((response) => response.ok ? response.json() : showAlert('Данные с сервера не получены, неверный response'))
+  .then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error('Данные с сервера не получены, что-то пошло не так');
+  })
   .then((data) => data)
   .catch(() => {
     showAlert('Данные с сервера не получены, что-то пошло не так');

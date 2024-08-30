@@ -1,4 +1,4 @@
-import {onMapLoad} from './form.js';
+import {toggleFormStatus} from './util.js';
 import {createTemplate} from './create-element.js';
 import {getData} from './api.js';
 
@@ -15,6 +15,13 @@ const MAP_CENTER = {
 const MAP_LAYER = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
 const adressInput = document.querySelector('#address');
+
+const onMapLoad = () => {
+  document.querySelector('.ad-form').classList.remove('ad-form--disabled');
+  toggleFormStatus(document.querySelector('.map__filters'), 'select');
+  toggleFormStatus(document.querySelector('.map__filters'), 'fieldset');
+  toggleFormStatus(document.querySelector('.ad-form'), 'fieldset');
+};
 
 const map = L.map('map-canvas').on('load', onMapLoad).setView(MAP_CENTER , 10);
 
@@ -63,3 +70,5 @@ const addMarkers = (element) => {
 getData().then((data) => {
   data.forEach(addMarkers);
 });
+
+export {markerMain, MAP_CENTER, adressInput};
