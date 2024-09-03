@@ -48,4 +48,6 @@ const setDefaultSlider = (element, minPrice, maxPrice) => {
   });
 };
 
-export {getGuests, getRooms, toggleFormStatus, showAlert, setDefaultSlider};
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
+export {getGuests, getRooms, toggleFormStatus, showAlert, setDefaultSlider, isEscapeKey};

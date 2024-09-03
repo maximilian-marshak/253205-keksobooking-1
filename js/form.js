@@ -1,7 +1,7 @@
 import {setDefaultSlider} from './util.js';
 import {sendData} from './api.js';
 import {showSuccessModal, showErrorModal} from './modals.js';
-import {markerMain, MAP_CENTER, adressInput} from './map.js';
+import {markerMain, MAP_CENTER} from './map.js';
 
 const MAX_PRICE_VALUE = 100000;
 const MIN_TITLE_VALUE = 30;
@@ -87,7 +87,7 @@ timeOut.addEventListener('change', onInputTimeOutChange);
 
 const validateAdPrice = (value) => {
   const minPrice = typeOption[typeHousing.value];
-  return minPrice < value && value < MAX_PRICE_VALUE;
+  return minPrice <= value && value < MAX_PRICE_VALUE;
 };
 
 pristine.addValidator(addForm.querySelector('#title'), validateAdTitle, TITLE_ERROR_MESSAGE);
@@ -107,12 +107,9 @@ const onSubmitSend = (evt) => {
 addForm.addEventListener('submit', onSubmitSend);
 
 resetButton.addEventListener('click', () => {
-  addForm.reset();
   setDefaultSlider(sliderElement, 0, MAX_PRICE_VALUE);
-
   mapFilters.reset();
   markerMain.setLatLng(MAP_CENTER);
-  adressInput.value = `${MAP_CENTER.lat},  ${MAP_CENTER.lng}`;
 });
 
 export {MAX_PRICE_VALUE, price, addForm, mapFilters, sliderElement};
