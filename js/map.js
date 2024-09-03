@@ -40,7 +40,7 @@ const markerMain = L.marker(MAP_CENTER,
   });
 markerMain.addTo(map);
 
-adressInput.value = `${MAP_CENTER.lat},  ${MAP_CENTER.lng}`;
+adressInput.setAttribute('value', `${MAP_CENTER.lat},  ${MAP_CENTER.lng}`);
 
 const onIconMove = (evt) => {
   const iconPosition = evt.target.getLatLng();
